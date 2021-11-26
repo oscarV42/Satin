@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const Post = require('./Post');
 
 const userSchema = new Schema({
-  UserName: {
+  username: {
     type: String,
     required: true,
     trim: true
@@ -34,7 +34,12 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  posts: [Post.schema]
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Post',
+    },
+  ],
 });
 
 // set up pre-save middleware to create password
