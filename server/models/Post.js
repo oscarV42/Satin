@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Comment = require('./Comment');
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
@@ -11,11 +10,34 @@ const postSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  comments: [Comment.schema],
+  comments: [
+    {
+      commentText: {
+        type: String,
+        required: true,
+        minlength: 1,
+        maxlength: 280,
+      },
+      commentAuthor: {
+        type: String,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (timestamp) => dateFormat(timestamp),
+      },
+    },
+  ],
   likes: [{
+    likeAuthor: {
+      type: String,
+      required: true
+    },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
+      get: (timestamp) => dateFormat(timestamp),
     }
   }]
 })
