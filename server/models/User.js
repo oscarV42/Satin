@@ -30,6 +30,10 @@ const userSchema = new Schema({
     required: true,
     minlength: 5
   },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
   posts: [Post.schema]
 });
 
@@ -48,6 +52,6 @@ userSchema.methods.isCorrectPassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('user', userSchema);
 
 module.exports = User;

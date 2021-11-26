@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
-
+const Comment = require('./Comment');
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
-  image: {
-    type: String,
-    required: false
-  },
   postBody: {
     type: String,
     required: true
@@ -14,9 +10,16 @@ const postSchema = new Schema({
   postDate: {
     type: Date,
     default: Date.now
-  }
+  },
+  comments: [Comment.schema],
+  likes: [{
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 })
 
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model('post', postSchema);
 
 module.exports = Post;
