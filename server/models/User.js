@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
-const Post = require('./Post');
 
 const userSchema = new Schema({
   username: {
@@ -29,6 +27,26 @@ const userSchema = new Schema({
     type: String,
     required: true,
     minlength: 5
+  },
+  profilePicture: {
+    type: String,
+    default: "",
+  },
+  coverPicture: {
+    type: String,
+    default: "",
+  },
+  followers: {
+    type: Array,
+    default: [],
+  },
+  followings: {
+    type: Array,
+    default: [],
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
