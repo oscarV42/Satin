@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   postBody: {
     type: String,
-    required: true
+    required: true,
+    max: 500,
   },
   postDate: {
     type: Date,
@@ -29,18 +34,13 @@ const postSchema = new Schema({
       },
     },
   ],
-  likes: [{
-    likeAuthor: {
-      type: String,
-      required: true
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      get: (timestamp) => dateFormat(timestamp),
-    }
-  }]
-})
+  likes: {
+    type: Array,
+    default: [],
+  },
+},
+  { timestamps: true }
+)
 
 const Post = mongoose.model('post', postSchema);
 

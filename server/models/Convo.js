@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-{ timestamps: true }
+
 const convoSchema = new Schema(
   {
     members: {
@@ -9,3 +9,7 @@ const convoSchema = new Schema(
   },
   { timestamps: true }
 )
+
+const Convo = mongoose.model('convo', convoSchema);
+
+module.exports = Convo;
