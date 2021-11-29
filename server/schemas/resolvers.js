@@ -1,26 +1,24 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Post } = require('../models');
+const { User, Post, Message, Convo } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    posts: async () => {
-      return await Post.find();
+    users: async () => {
+      return User.find().populate('post');
     },
-    post: async () => {
-      return await Post.findById(userId).populate('user')
+    user: async (parent, { username }) => {
+      return User.findOne({ username }).populate('post');
     },
-    user: async (parent, args, context) => {
-      if (context.user) {
-        const user = await User.findById(context.user._id).populate('post');
-  
-        user.posts.sort((a, b) => b.postDate - a.postDate);
-  
-        return user;
-      }
-  
-      throw new AuthenticationError('Not logged in');
+    thoughts: async (parent, { username }) => {
+      const params = username ? { username } : {};
+      return Post.find(params).sort({ createdAt: -1 });
     },
-  
-  }
+    thought: async (parent, { postId }) => {
+      return Post.findOne({ _id: postId });
+    },
+  },
+
 }
+
+module.exports = resolvers;

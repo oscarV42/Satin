@@ -2,14 +2,15 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
-  userId: {
+  postAuthor: {
     type: String,
     required: true,
   },
   postBody: {
     type: String,
-    required: true,
-    max: 500,
+    required: 'You need to leave a thought!',
+    minlength: 1,
+    maxlength: 500,
   },
   postDate: {
     type: Date,
@@ -47,6 +48,6 @@ const postSchema = new Schema({
   { timestamps: true }
 )
 
-const Post = mongoose.model('post', postSchema);
+const Post = mongoose.model('Post', postSchema);
 
 module.exports = Post;
