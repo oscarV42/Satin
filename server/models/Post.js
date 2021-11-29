@@ -13,8 +13,10 @@ const postSchema = new Schema({
   },
   postDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
+    get: (timestamp) => dateFormat(timestamp),
   },
+  
   comments: [
     {
       commentText: {
@@ -34,6 +36,9 @@ const postSchema = new Schema({
       },
     },
   ],
+  img: {
+    type: String,
+  },
   likes: {
     type: Array,
     default: [],

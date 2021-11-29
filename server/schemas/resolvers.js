@@ -8,7 +8,7 @@ const resolvers = {
       return await Post.find();
     },
     post: async () => {
-      return await Post.findById(_id).populate('user')
+      return await Post.findById(userId).populate('user')
     },
     user: async (parent, args, context) => {
       if (context.user) {

@@ -6,16 +6,15 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   firstName: {
     type: String,
-    required: true,
     trim: true
   },
   lastName: {
     type: String,
-    required: true,
     trim: true
   },
   email: {
@@ -52,12 +51,6 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  posts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Post',
-    },
-  ],
 });
 
 // set up pre-save middleware to create password
