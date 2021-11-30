@@ -10,10 +10,11 @@ const typeDefs = gql`
     lastName: String
     profilePicture: String
     coverPicture: String
-    followers: Array
-    followings: Array
+    followers: [Follower]
+    followings: [Following]
     isAdmin: Boolean
     createdAt: Date!
+    posts: [Post]!
   }
 
   type Post {
@@ -21,21 +22,15 @@ const typeDefs = gql`
     userId: String!
     postBody: String!
     postDate: Date!
-    comments: Array
+    comments: [Comment]!
     img: String
-    likes: Array
-  }
-  
-  type Message {
-    _id: ID!
-    convoId: String
-    sender: String!
-    text: String!
+    likes: [Like]!
   }
 
   type Convo {
     _id: ID!
-    members: Array
+    members: [Member]!
+    messages: [Message]!
   }
 
   type Auth {
@@ -48,7 +43,6 @@ const typeDefs = gql`
     user(username: String!): User
     posts(username: String): [Post]
     post(postId: ID!): Post
-    messages(convoId: ID!): [Message]
     convo(members: Array!): Convo
     convos(userId: String): [Convo]
   }
@@ -65,8 +59,12 @@ const typeDefs = gql`
     removePost(postId: ID!): Post
     removeComment(thoughtId: ID!, commentId: ID!): Post
     addConvo(senderId: String!, recieverId: String!): Convo
-    addMessage(convoId: ID!, sender: String!, text: String!): Message
-    removeMessage(messageId: ID!): Message 
+    addMessage(
+      convoId: ID!
+      sender: String!
+      text: String!
+    ): Convo
+    removeMessage(convoId: ID!, messageId: ID!): Convo 
   }
 `;
 
