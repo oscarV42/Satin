@@ -1,14 +1,14 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Post, Message, Convo } = require('../models');
+const { User, Post, Convo } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
     users: async () => {
-      return User.find().populate('post');
+      return User.find().populate('posts');
     },
     user: async (parent, { username }) => {
-      return User.findOne({ username }).populate('post');
+      return User.findOne({ username }).populate('posts');
     },
     posts: async (parent, { username }) => {
       const params = username ? { username } : {};
@@ -19,9 +19,11 @@ const resolvers = {
     },
     convos: async (parent, { username }) => {
       const params = username ? { username } : {};
-      return Post.find(params);
+      return Convo.find(params);
     },
-    
+    convo: async (parent, { convoId }) => {
+      return Convo.findOne({ _id: convoId })
+    }
   },
 
   Mutation: {
