@@ -75,9 +75,32 @@ const resolvers = {
       return Post.findOneAndDelete({ _id: postId });
     },
     removeComment: async (parent, { postId, commentId }) => {
-      return postId.findOneAndUpdate(
+      return Post.findOneAndUpdate(
         { _id: postId },
         { $pull: { comments: { _id: commentId } } },
+        { new: true }
+      );
+    },
+    addConvo: async (parent, { members }) => {
+      const post = await Convo.create({ members });
+      return post;
+    },
+    addMessage: async (parent, { convoId, sender, text }) => {
+      return Convo.findOneAndUpdate(
+        { _id: convoId },
+        {
+          $addToSet: { messages: { sender, text } },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+    },
+    removeMessage: async (parent, { convoId, messageId }) => {
+      return Convo.findOneAndUpdate(
+        { _id: convoId },
+        { $pull: { comments: { _id: messageId } } },
         { new: true }
       );
     },
