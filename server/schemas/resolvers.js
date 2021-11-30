@@ -17,6 +17,11 @@ const resolvers = {
     post: async (parent, { postId }) => {
       return Post.findOne({ _id: postId });
     },
+    convos: async (parent, { username }) => {
+      const params = username ? { username } : {};
+      return Post.find(params);
+    },
+    
   },
 
   Mutation: {

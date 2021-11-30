@@ -43,8 +43,8 @@ const typeDefs = gql`
     user(username: String!): User
     posts(username: String): [Post]
     post(postId: ID!): Post
-    convo(members: Array!): Convo
-    convos(userId: String): [Convo]
+    convo(convoId: String!): Convo
+    convos(username: String): [Convo]
   }
 
   type Mutation {
