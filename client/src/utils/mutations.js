@@ -25,8 +25,25 @@ export const ADD_USER = gql`
 `;
 
 export const ADD_POST = gql`
-  mutation addThought($img: String, $postBody: String!, $postAuthor: String!) {
-    addThought(img: $img, postBody: $postBody, postAuthor: $postAuthor) {
+  mutation addPost($img: String, $postBody: String!, $postAuthor: String!) {
+    addPost(img: $img, postBody: $postBody, postAuthor: $postAuthor) {
+      _id
+      postBody
+      postAuthor
+      postDate
+      comments {
+        _id
+        commentText
+      }
+      likes
+      img
+    }
+  }
+`;
+
+export const REMOVE_POST = gql`
+  mutation removePost($postId: ID!) {
+    removePost(postId: $postId) {
       _id
       postBody
       postAuthor
