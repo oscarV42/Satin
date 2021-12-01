@@ -14,3 +14,16 @@ export const QUERY_USER = gql`
     }
   }
 `;
+
+export const QUERY_POST = gql`
+  query getPost {
+    posts {
+      _id
+      postBody
+      postAuthor
+      createdAt
+      likes
+      img
+    }
+  }
+`;
