@@ -83,3 +83,69 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+export const REMOVE_COMMENT = gql`
+  mutation removePost(
+    $postId: ID!
+    $commentId: ID!
+  ) {
+    removePost(
+      postId: $postId
+      commentId: $commentId
+    ) {
+      _id
+      postBody
+      postAuthor
+      postDate
+      comments {
+        _id
+        commentText
+        createdAt
+      }
+      likes
+      img
+    }
+  }
+`;
+
+export const ADD_CONVO = gql `
+  mutation addConvo($members: Array!) {
+    addConvo(members: $members) {
+      _id
+      members
+      messages {
+        sender
+        text
+        createdAt
+      }
+    }
+  }
+`;
+
+export const ADD_MESSAGE = gql`
+  mutation addMessage($convoId: ID!, $sender: String!, $text: String!) {
+    addMessage(convoId: $convoId, sender: $sender, text: $text) {
+      _id
+      members
+      messages {
+        sender
+        text
+        createdAt
+      }
+    }
+  }
+`;
+
+export const REMOVE_MESSAGE = gql`
+  mutation removeMessage($convoId: ID!, $messageId: ID!) {
+    removeMessage(convoId: $convoId, messageId: $messageId) {
+      _id
+      members
+      messages {
+        sender
+        text
+        createdAt
+      }
+    }
+  }
+`;

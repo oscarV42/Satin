@@ -82,8 +82,8 @@ const resolvers = {
       );
     },
     addConvo: async (parent, { members }) => {
-      const post = await Convo.create({ members });
-      return post;
+      const convo = await Convo.create({ members });
+      return convo;
     },
     addMessage: async (parent, { convoId, sender, text }) => {
       return Convo.findOneAndUpdate(
