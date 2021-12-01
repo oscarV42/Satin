@@ -46,3 +46,17 @@ export const QUERY_SINGLE_POST = gql`
   }
 `;
 
+export const QUERY_SINGLE_CONVO = gql`
+  query getSingleConvo($convId: ID!) {
+    convo(convoId: $convoId) {
+      _id
+      members
+      messages{
+        _id
+        sender
+        text
+      }
+    }
+  }
+`;
+
