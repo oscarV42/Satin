@@ -21,9 +21,28 @@ export const QUERY_POST = gql`
       _id
       postBody
       postAuthor
-      createdAt
+      postDate
       likes
       img
     }
   }
 `;
+
+export const QUERY_SINGLE_POST = gql`
+  query getSinglePost($postId: ID!) {
+    post(postId: $postId) {
+      _id
+      postBody
+      postAuthor
+      postDate
+      comments {
+        _id
+        commentText
+        createdAt
+      }
+      likes
+      img
+    }
+  }
+`;
+
