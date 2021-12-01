@@ -30,7 +30,7 @@ export const ADD_POST = gql`
       _id
       postBody
       postAuthor
-      createdAt
+      postDate
       comments {
         _id
         commentText
@@ -41,3 +41,28 @@ export const ADD_POST = gql`
   }
 `;
 
+export const ADD_COMMENT = gql`
+  mutation addComment(
+    $postId: ID!
+    $commentText: String!
+    $commentAuthor: String!
+  ) {
+    addComment(
+      postId: $postId
+      commentText: $commentText
+      commentAuthor: $commentAuthor
+    ) {
+      _id
+      postBody
+      postAuthor
+      postDate
+      comments {
+        _id
+        commentText
+        createdAt
+      }
+      likes
+      img
+    }
+  }
+`;
