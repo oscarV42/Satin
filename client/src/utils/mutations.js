@@ -23,3 +23,21 @@ export const ADD_USER = gql`
     }
   }
 `;
+
+export const ADD_POST = gql`
+  mutation addThought($img: String, $postBody: String!, $postAuthor: String!) {
+    addThought(img: $img, postBody: $postBody, postAuthor: $postAuthor) {
+      _id
+      postBody
+      postAuthor
+      createdAt
+      comments {
+        _id
+        commentText
+      }
+      likes
+      img
+    }
+  }
+`;
+
