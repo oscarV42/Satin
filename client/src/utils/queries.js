@@ -46,6 +46,15 @@ export const QUERY_SINGLE_POST = gql`
   }
 `;
 
+export const QUERY_USER_CONVOS = gql`
+  query getUserConvos($username: String!) {
+    convo(username: $username) {
+      _id
+      members
+    }
+  }
+`;
+
 export const QUERY_SINGLE_CONVO = gql`
   query getSingleConvo($convId: ID!) {
     convo(convoId: $convoId) {
