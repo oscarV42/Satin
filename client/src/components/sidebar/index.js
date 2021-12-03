@@ -9,6 +9,7 @@ import {
     Event,
     School,
   } from "@material-ui/icons";
+  import './sidebar.css'
   // import CloseFriend from "../closeFriend/CloseFriend";
   
   export default function Sidebar() {
