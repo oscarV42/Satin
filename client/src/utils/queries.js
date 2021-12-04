@@ -68,4 +68,3 @@ export const QUERY_SINGLE_CONVO = gql`
     }
   }
 `;
-
