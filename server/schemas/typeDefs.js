@@ -10,10 +10,10 @@ const typeDefs = gql`
     lastName: String
     profilePicture: String
     coverPicture: String
-    followers: [Follower]
-    followings: [Following]
+    followers: [String]
+    followings: [String]
     isAdmin: Boolean
-    createdAt: Date!
+    createdAt: String!
     posts: [Post]!
   }
 
@@ -21,16 +21,29 @@ const typeDefs = gql`
     _id: ID!
     userId: String!
     postBody: String!
-    postDate: Date!
+    postDate: String!
     comments: [Comment]!
     img: String
-    likes: [Like]!
+    likes: [String]
+  }
+
+  type Comment {
+    _id: ID
+    commentText: String
+    commentAuthor: String
+    createdAt: String
+  }
+
+  type Message {
+    convoId: ID!
+    sender: String!
+    text: String!
   }
 
   type Convo {
     _id: ID!
-    members: [Member]!
-    messages: [Message]!
+    members: [String]!
+    messages: [Message]
   }
 
   type Auth {
