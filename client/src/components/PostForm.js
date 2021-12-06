@@ -71,6 +71,7 @@ export const ADD_POST = gql`
         username
       }
       likeCount
+      commentCount
       img
     }
   }

@@ -32,6 +32,7 @@ const typeDefs = gql`
     img: String
     likes: [Like]!
     likeCount: Int
+    commentCount: Int
   }
 
   type Comment {
