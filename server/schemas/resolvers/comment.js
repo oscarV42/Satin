@@ -21,7 +21,7 @@ module.exports = {
         return Post.findOneAndUpdate(
           { _id: postId },
           {
-            $addToSet: { comments: { commentText: body, commentAuthor: username, createdAt: new Date().toISOString } },
+            $addToSet: { comments: { commentText: body, commentAuthor: username, createdAt: new Date().toISOString() } },
           },
           {
             new: true,
