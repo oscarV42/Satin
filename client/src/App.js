@@ -1,47 +1,37 @@
+import React from 'react';
+import { Container } from 'semantic-ui-react';
 
+import 'semantic-ui-css/semantic.min.css';
+// import './App.css';
+
+import { AuthProvider } from './context/auth';
+import AuthRoute from './util/AuthRoute';
+
+import MenuBar from './components/MenuBar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import SinglePost from './pages/SinglePost';
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
 } from "react-router-dom";
 
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink
-} from '@apollo/client';
-
-import { setContext } from '@apollo/client/link/context';
-
-// Construct main GraphQL API endpoint
-const httpLink = createHttpLink({
-  uri: '/graphql',
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('id_token');
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
 
 function App() {
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider>
       <Router>
         <Switch>
-
+          <Container>
+            <MenuBar />
+            <Route exact path='/' component = {Home}/>
+            <AuthRoute exact path="/login" component={Login} />
+            <AuthRoute exact path="/register" component={Register} />
+            <Route exact path="/posts/:postId" component={SinglePost} />
+          </Container>
         </Switch>
       </Router>
     </ApolloProvider>
