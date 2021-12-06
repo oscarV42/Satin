@@ -8,7 +8,7 @@ const postSchema = new Schema({
   },
   postBody: {
     type: String,
-    required: 'You need to leave a thought!',
+    required: 'You need to leave a post!',
     minlength: 1,
     maxlength: 500,
   },
@@ -40,10 +40,17 @@ const postSchema = new Schema({
   img: {
     type: String,
   },
-  likes: {
-    type: Array,
-    default: [],
-  },
+  likes: [
+    {
+      createdAt: {
+        type: Date,
+        default: Date.now(),
+      },
+      username: {
+        type: String
+      }
+    }
+  ],
 },
   { timestamps: true }
 )

@@ -17,6 +17,12 @@ const typeDefs = gql`
     posts: [Post]!
   }
 
+  type Like {
+    _id: ID!
+    createdAt: String!
+    username: String!
+  }
+
   type Post {
     _id: ID!
     userId: String!
@@ -24,7 +30,7 @@ const typeDefs = gql`
     postDate: String!
     comments: [Comment]!
     img: String
-    likes: [String]
+    likes: [Like]!
   }
 
   type Comment {

@@ -8,51 +8,28 @@ const db = require('./config/connection');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
-// const server = new ApolloServer({
-//   typeDefs,
-//   resolvers,
-//   context: authMiddleware,
-// });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: authMiddleware
+});
 
-// server.applyMiddleware({ app })
-async function startApolloServer(typeDefs, resolvers) {
-  // Same ApolloServer initialization as before
-  const server = new ApolloServer({ 
-    typeDefs, 
-    resolvers,
-    context: authMiddleware 
-  });
+server.applyMiddleware({ app });
 
-  // Required logic for integrating with Express
-  await server.start();
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-  server.applyMiddleware({
-     app,
-
-     // By default, apollo-server hosts its GraphQL endpoint at the
-     // server root. However, *other* Apollo Server packages host it at
-     // /graphql. Optionally provide this to match apollo-server.
-    //  path: '/'
-  });
-
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
-
-  // if we're in production, serve client/build as static assets
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
-  }
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'))
-  })
-
-  db.once('open', () => {
-    app.listen(PORT, () => {
-      console.log(`🌍 Now listening on localhost:${PORT}`)
-      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-    });
-  });
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
-startApolloServer(typeDefs, resolvers);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+db.once('open', () => {
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+  });
+});
