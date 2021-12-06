@@ -75,6 +75,7 @@ const typeDefs = gql`
       commentText: String!
       commentAuthor: String!
     ): Post
+    likePost(postId: ID!): Post
     removePost(postId: ID!): Post
     removeComment(thoughtId: ID!, commentId: ID!): Post
     addConvo(senderId: String!, recieverId: String!): Convo
