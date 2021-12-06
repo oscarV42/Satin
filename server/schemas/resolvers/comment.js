@@ -33,11 +33,21 @@ module.exports = {
     deleteComment: async (_, { postId, commentId }, context) => {
       const { username } = Auth(context);
 
-      return Post.findOneAndUpdate(
-        { _id: postId },
-        { $pull: { comments: { _id: commentId } } },
-        { new: true }
-      );
+      const post = await Post.findById(postId);
+
+      if(post) {
+        const commentIndex = post
+
+        if(post.comment[commentIndex].commentAuthor === username){
+            return Post.findOneAndUpdate(
+                { _id: postId },
+                { $pull: { comments: { _id: commentId } } },
+                { new: true }
+            );
+        } else {
+            throw new AuthenticationError('Action Now Allowed!');
+        }
+      } else throw new UserInputError('Post Not Found!');
     }
   }
 }
