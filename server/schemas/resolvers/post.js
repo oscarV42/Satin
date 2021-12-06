@@ -7,10 +7,10 @@ module.exports = {
   Query: {
     getPosts: async () => {
       try {
-        const posts =  Post.find().sort({ postDate: -1 });
+        const posts =  await Post.find().sort({ postDate: -1 });
         return posts;
       } catch(err) {
-          throw new Error(err)
+        throw new Error(err)
       }
     },
     getPost: async (_, { postId }) => {
@@ -42,7 +42,21 @@ module.exports = {
       })
 
       return newPost;
+    },
+    removePost: async (_, { postId }, context) => {
+      const user = Auth(context);
+
+      try{
+        const post = await Post.findById(postId);
+        if(user.username === post.postAuthor) {
+          Post.findOneAndDelete({ _id: postId});
+          return 'Post deleted!';
+        } else {
+          throw new AuthenticationError('Action not allowed!');
+        }
+      }catch(err) {
+        throw new Error(err);
+      }
     }
-    removePost
   }
 }
