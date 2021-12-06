@@ -25,5 +25,24 @@ module.exports = {
         throw new Error(err);
       }
     }
+  },
+
+  Mutation: {
+    addPost: async (_, { body }, context) => {
+      const user = Auth(context);
+      
+      if(body.trim() === '') {
+        throw new Error('Post bodymust not be empty!');
+      }
+
+      const newPost = await Post.create({
+        postBody: body,
+        postAuthor: user,
+        postDate: new Date().toISOString
+      })
+
+      return newPost;
+    }
+    removePost
   }
 }
