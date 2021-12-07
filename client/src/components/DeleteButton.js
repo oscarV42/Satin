@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import gql from '@apollo/client';
+import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 import { Button, Confirm, Icon } from 'semantic-ui-react';
 
-import { FETCH_POSTS_QUERY } from '../util/graphql';
-import MyPopup from '../util/MyPopup';
+import { FETCH_POSTS_QUERY } from '../utils/graphql';
+import MyPopup from '../utils/MyPopup';
 
 function DeleteButton({ postId, commentId, callback }) {
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -99,3 +99,5 @@ export const REMOVE_COMMENT = gql`
     }
   }
 `;
+
+export default DeleteButton;

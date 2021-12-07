@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Form } from 'semantic-ui-react';
-import gql from '@apollo/client';
+import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 
-import { useForm } from '../util/hooks';
-import { FETCH_POSTS_QUERY } from '../util/graphql';
+import { useForm } from '../utils/hooks';
+import { FETCH_POSTS_QUERY } from '../utils/graphql';
 
 function PostForm() {
     const { values, onChange, onSubmit } = useForm(createPostCallback, {

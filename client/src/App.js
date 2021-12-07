@@ -5,7 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 // import './App.css';
 
 import { AuthProvider } from './context/auth';
-import AuthRoute from './util/AuthRoute';
+import AuthRoute from './utils/AuthRoute';
 
 import MenuBar from './components/MenuBar';
 import Home from './pages/Home';
@@ -22,7 +22,7 @@ import {
 
 function App() {
   return (
-    <ApolloProvider>
+    <AuthProvider>
       <Router>
         <Switch>
           <Container>
@@ -34,7 +34,7 @@ function App() {
           </Container>
         </Switch>
       </Router>
-    </ApolloProvider>
+    </AuthProvider>
   );
 }
 
