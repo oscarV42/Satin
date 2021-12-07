@@ -25,7 +25,7 @@ const typeDefs = gql`
 
   type Post {
     _id: ID!
-    userId: String!
+    postAuthor: String!
     postBody: String!
     postDate: String!
     comments: [Comment]!
@@ -62,16 +62,16 @@ const typeDefs = gql`
   type Query {
     users: [User]
     user(username: String!): User
-    getPosts(): [Post]
-    getPost(postId: ID!): Post
+    posts: [Post]
+    post(postId: ID!): Post
     convo(convoId: String!): Convo
     convos(username: String): [Convo]
   }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
-    login(email: String!, username: String!, password: String!): Auth
-    addPost(img: String, postBody: String!, userId: String!): Post
+    login(email: String!, password: String!): Auth
+    addPost(img: String, postBody: String!, postAuthor: String!): Post
     addComment(
       postId: ID!
       commentText: String!

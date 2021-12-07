@@ -3,10 +3,10 @@ import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 import { Button, Confirm, Icon } from 'semantic-ui-react';
 
-import { FETCH_POSTS_QUERY } from '../utils/graphql';
+import { QUERY_POSTS } from '../utils/queries';
 import MyPopup from '../utils/MyPopup';
 
-function DeleteButton({ postId, commentId, callback }) {
+function DeleteButton({ postId, commentId }) {
     const [confirmOpen, setConfirmOpen] = useState(false);
   
     const mutation = commentId ? REMOVE_COMMENT : REMOVE_POST;
@@ -16,12 +16,11 @@ function DeleteButton({ postId, commentId, callback }) {
         setConfirmOpen(false);
         if (!commentId) {
           const data = proxy.readQuery({
-            query: FETCH_POSTS_QUERY
+            query: QUERY_POSTS
           });
           data.getPosts = data.getPosts.filter((p) => p.id !== postId);
-          proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
+          proxy.writeQuery({ query: QUERY_POSTS, data });
         }
-        if (callback) callback();
       },
       variables: {
         postId,
@@ -43,7 +42,6 @@ function DeleteButton({ postId, commentId, callback }) {
         <Confirm
           open={confirmOpen}
           onCancel={() => setConfirmOpen(false)}
-          onConfirm={deletePostOrMutation}
         />
       </>
     );

@@ -1,5 +1,7 @@
-import React, { useContext, useState, useRef } from 'react';
-import { gql } from '@apollo/client';
+import React, { useState } from 'react';
+// Import the `useParams()` hook
+import { useParams } from 'react-router-dom';
+
 import { useQuery, useMutation } from '@apollo/client';
 import moment from 'moment';
 import {
@@ -12,43 +14,62 @@ import {
   Label
 } from 'semantic-ui-react';
 
-import { AuthContext } from '../context/auth';
+import { QUERY_SINGLE_POST } from '../utils/queries'
+import { ADD_COMMENT } from '../utils/mutations';
 import LikeButton from '../components/LikeButton';
 import DeleteButton from '../components/DeleteButton';
 import MyPopup from '../utils/MyPopup';
 
-function SinglePost(props) {
-  const postId = props.match.params.postId;
-  const { user } = useContext(AuthContext);
-  const commentInputRef = useRef(null);
+import Auth from '../utils/auth';
 
-  const [comment, setComment] = useState('');
+function SinglePost() {
+  // Use `useParams()` to retrieve value of the route parameter `:profileId`
+  const { postId } = useParams();
 
-  const {
-    data: { getPost }
-  } = useQuery(FETCH_POST_QUERY, {
-    variables: {
-      postId
-    }
+  const { loading, data } = useQuery(QUERY_SINGLE_POST, {
+    // pass URL parameter
+    variables: { postId: postId },
   });
 
-  const [submitComment] = useMutation(SUBMIT_COMMENT_MUTATION, {
-    update() {
-      setComment('');
-      commentInputRef.current.blur();
-    },
-    variables: {
-      postId,
-      body: comment
-    }
-  });
+  const post = data?.post || {};
 
-  function deletePostCallback() {
-    props.history.push('/');
-  }
+  const { user } = Auth.getProfile().data
+
+  const [commentText, setCommentText] = useState('');
+  const [characterCount, setCharacterCount] = useState(0);
+
+  const [addComment, { error }] = useMutation(ADD_COMMENT);
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const { data } = await addComment({
+        variables: {
+          postId,
+          commentText,
+          commentAuthor: Auth.getProfile().data.username,
+        },
+      });
+
+      setCommentText('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'commentText' && value.length <= 280) {
+      setCommentText(value);
+      setCharacterCount(value.length);
+    }
+  };
+
 
   let postMarkup;
-  if (!getPost) {
+  if (!post) {
     postMarkup = <p>Loading post..</p>;
   } else {
     const {
@@ -60,7 +81,7 @@ function SinglePost(props) {
       likes,
       likeCount,
       commentCount
-    } = getPost;
+    } = post;
 
     postMarkup = (
       <Grid>
@@ -97,7 +118,7 @@ function SinglePost(props) {
                   </Button>
                 </MyPopup>
                 {user && user.username === postAuthor && (
-                  <DeleteButton postId={id} callback={deletePostCallback} />
+                  <DeleteButton postId={id} />
                 )}
               </Card.Content>
             </Card>
@@ -105,21 +126,19 @@ function SinglePost(props) {
               <Card fluid>
                 <Card.Content>
                   <p>Post a comment</p>
-                  <Form>
+                  <Form onSubmit = {handleFormSubmit}>
                     <div className="ui action input fluid">
                       <input
                         type="text"
                         placeholder="Comment.."
                         name="comment"
-                        value={comment}
-                        onChange={(event) => setComment(event.target.value)}
-                        ref={commentInputRef}
+                        value={commentText}
+                        onChange={handleChange}
                       />
                       <button
                         type="submit"
                         className="ui button teal"
-                        disabled={comment.trim() === ''}
-                        onClick={submitComment}
+                        disabled={commentText.trim() === ''}
                       >
                         Submit
                       </button>
@@ -147,43 +166,5 @@ function SinglePost(props) {
   }
   return postMarkup;
 }
-
-const SUBMIT_COMMENT_MUTATION = gql`
-  mutation($postId: String!, $commentText: String!) {
-    addComment(postId: $postId, commentText: $body) {
-      id
-      comments {
-        _id
-        commentText
-        createdAt
-        commentAuthor
-      }
-      commentCount
-    }
-  }
-`;
-
-const FETCH_POST_QUERY = gql`
-  query($postId: ID!) {
-    getPost(postId: $postId) {
-      _id
-      postBody
-      postDate
-      postAuthor
-      likeCount
-      likes {
-        createdAt
-        username
-      }
-      commentCount
-      comments {
-        _id
-        commentAuthor
-        createdAt
-        commentText
-      }
-    }
-  }
-`;
 
 export default SinglePost;

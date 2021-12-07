@@ -5,7 +5,7 @@ const Auth = require('../../utils/auth');
 
 module.exports = {
   Query: {
-    getPosts: async () => {
+    posts: async () => {
       try {
         const posts =  await Post.find().sort({ postDate: -1 });
         return posts;
@@ -13,7 +13,7 @@ module.exports = {
         throw new Error(err)
       }
     },
-    getPost: async (_, { postId }) => {
+    post: async (_, { postId }) => {
       try {
         const post = await Post.findById(postId);
         if(post) {
@@ -28,19 +28,18 @@ module.exports = {
   },
 
   Mutation: {
-    addPost: async (_, { body }, context) => {
-      const user = Auth(context);
+    addPost: async (_, { postBody, postAuthor }) => {
       
-      if(body.trim() === '') {
+      if(postBody.trim() === '') {
         throw new Error('Post body must not be empty!');
       }
 
       const newPost = await Post.create({
-        postBody: body,
-        postAuthor: user,
+        postBody: postBody,
+        postAuthor: postAuthor,
         postDate: new Date().toISOString()
       })
-
+      await newPost.save();
       return newPost;
     },
     removePost: async (_, { postId }, context) => {

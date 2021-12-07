@@ -1,82 +1,68 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Form } from 'semantic-ui-react';
 import { useMutation } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 
-import { AuthContext } from '../context/auth';
-import { useForm } from '../utils/hooks';
+import Auth from '../utils/auth';
 
-function Login(props) {
-  const context = useContext(AuthContext);
-  const [errors, setErrors] = useState({});
+function Login() {
+  const [formState, setFormState] = useState({ email: '', password: '' });
+  const [login, { error, data, loading }] = useMutation(LOGIN_USER);
 
-  const { onChange, onSubmit, values } = useForm(loginUserCallback, {
-    email: '',
-    password: ''
-  });
+  // update state based on form input changes
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-      update(
-          _,
-          {
-            data: { login: userData }
-          }
-      ) {
-            context.login(userData);
-            props.history.push('/');
-        },
-        onError(err) {
-            setErrors(err.graphQLErrors[0].extensions.exception.errors);
-        },
-        variables: values
-  });
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  };
 
-  function loginUserCallback() {
-    loginUser();
-  }
+  // submit form
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const { data } = await login({
+        variables: { ...formState },
+      });
+
+      Auth.login(data.login.token);
+    } catch (e) {
+      console.error(e);
+    }
+
+    // clear form values
+    setFormState({
+      email: '',
+      password: '',
+    });
+  };
 
   return (
     <div className = 'form-container'>
-      <Form onSubmit={onSubmit} noValidate className={loading ? 'lodaing': ''}>
+      <Form onSubmit= {handleFormSubmit} noValidate className={loading ? 'loading': ''}>
         <h1>Login into your account.</h1>
         <Form.Input
           label="Email"
           placeholder="Email"
           name="email"
           type="text"
-          value={values.email}
-          error={errors.email ? true : false}
-          onChange={onChange}
+          value={formState.email}
+          onChange={handleChange}
         />
         <Form.Input
           label="Password"
           placeholder="Password"
           name="password"
           type="password"
-          value={values.password}
-          error={errors.password ? true : false}
-          onChange={onChange}
+          value={formState.password}
+          onChange={handleChange}
         />
         <Button type="submit" primary> Login </Button>
       </Form>
-      {Object.keys(errors).length > 0 && (
-        <div className="ui error message">
-          <h1>Email or Password entered incorrectly</h1>
-        </div>
-      )}
     </div>
   );
 }
 
-const LOGIN_USER = gql `
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-      user {
-        _id
-        username
-      }
-    }
-  }
-`;
 export default Login;

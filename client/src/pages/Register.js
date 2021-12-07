@@ -1,95 +1,80 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Form } from 'semantic-ui-react';
 import { useMutation } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { ADD_USER } from '../utils/mutations';
 
-import { AuthContext } from '../context/auth';
-import { useForm } from '../utils/hooks';
+import Auth from '../utils/auth';
 
-function Register(props) {
-    const context = useContext(AuthContext);
+function Register() {
     const [errors, setErrors] = useState({});
   
-    const { onChange, onSubmit, values } = useForm(registerUser, {
+    const [formState, setFormState] = useState({
       username: '',
       email: '',
       password: '',
     });
+    const [addUser, { error, data, loading }] = useMutation(ADD_USER);
   
-    const [addUser, { loading }] = useMutation(ADD_USER, {
-      update(
-        _,
-        {
-          data: { register: userData }
-        }
-      ) {
-        context.login(userData);
-        props.history.push('/');
-      },
-      onError(err) {
-        setErrors(err.graphQLErrors[0].extensions.exception.errors);
-      },
-      variables: values
-    });
+    const handleChange = (event) => {
+      const { name, value } = event.target;
   
-    function registerUser() {
-      addUser();
-    }
+      setFormState({
+        ...formState,
+        [name]: value,
+      });
+    };
+  
+    const handleFormSubmit = async (event) => {
+      event.preventDefault();
+  
+      try {
+        const { data } = await addUser({
+          variables: { ...formState },
+        });
+  
+        Auth.login(data.addUser.token);
+      } catch (e) {
+        console.error(e);
+      }
+    };
   
     return (
       <div className="form-container">
-        <Form onSubmit={onSubmit} noValidate className={loading ? 'loading' : ''}>
+        <Form onSubmit={handleFormSubmit} noValidate className={loading ? 'loading' : ''}>
           <h1>Register</h1>
           <Form.Input
             label="Username"
             placeholder="Username.."
             name="username"
             type="text"
-            value={values.username}
-            error={errors.username ? true : false}
-            onChange={onChange}
+            value={formState.username}
+            required
+            onChange={handleChange}
           />
           <Form.Input
             label="Email"
             placeholder="Email.."
             name="email"
             type="email"
-            value={values.email}
-            error={errors.email ? true : false}
-            onChange={onChange}
+            value={formState.email}
+            required
+            onChange={handleChange}
           />
           <Form.Input
             label="Password"
             placeholder="Password.."
             name="password"
             type="password"
-            value={values.password}
-            error={errors.password ? true : false}
-            onChange={onChange}
+            value={formState.password}
+            required
+            onChange={handleChange}
           />
           <Button type="submit" primary>
             Register
           </Button>
         </Form>
-        {Object.keys(errors).length > 0 && (
-          <div className="ui error message">
-            <h1>Something went wrong with your registration!</h1>
-          </div>
-        )}
       </div>
     );
 }
-
-const ADD_USER = gql`
-  mutation addUser($username: String!, $email: String!, $password: String!) {
-    addUser(username: $username, email: $email, password: $password) {
-      token
-      user {
-        _id
-        username
-      }
-    }
-  }
-`;
 
 export default Register;

@@ -3,7 +3,7 @@ import { Button, Card, Icon, Label, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-import { AuthContext } from '../context/auth';
+import Auth from '../utils/auth';
 import LikeButton from './LikeButton';
 import DeleteButton from './DeleteButton';
 import MyPopup from '../utils/MyPopup';
@@ -11,10 +11,10 @@ import MyPopup from '../utils/MyPopup';
 function PostCard({
     post: { postBody, postDate, _id, postAuthor, likeCount, commentCount, likes }
   }) {
-    const { user } = useContext(AuthContext);
+    const { user } = Auth.getProfile().data;
   
     return (
-      <Card fluid>
+      <Card fluid key={_id}>
         <Card.Content>
           <Image
             floated="right"

@@ -1,11 +1,17 @@
 import React from 'react';
 import { Container } from 'semantic-ui-react';
 
-import 'semantic-ui-css/semantic.min.css';
-// import './App.css';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
-import { AuthProvider } from './context/auth';
-import AuthRoute from './utils/AuthRoute';
+
+import 'semantic-ui-css/semantic.min.css';
+import './app.css'
 
 import MenuBar from './components/MenuBar';
 import Home from './pages/Home';
@@ -15,26 +21,43 @@ import SinglePost from './pages/SinglePost';
 
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
 } from "react-router-dom";
+
+// Construct our main GraphQL API endpoint
+const httpLink = createHttpLink({
+  uri: 'http://localhost:3001/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('id_token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
 
 
 function App() {
   return (
-    <AuthProvider>
+    <ApolloProvider client = {client}>
       <Router>
-        <Switch>
-          <Container>
-            <MenuBar />
-            <Route exact path='/' component = {Home}/>
-            <AuthRoute exact path="/login" component={Login} />
-            <AuthRoute exact path="/register" component={Register} />
-            <Route exact path="/posts/:postId" component={SinglePost} />
-          </Container>
-        </Switch>
+        <MenuBar />
+        <Container>
+          <Route exact path='/' component = {Home}/>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/posts/:postId" component={SinglePost} />
+        </Container>
       </Router>
-    </AuthProvider>
+    </ApolloProvider>
   );
 }
 
