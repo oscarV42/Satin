@@ -1,19 +1,21 @@
 const { AuthenticationError, UserInputError } = require('apollo-server-express');
 
 const Post = require('../../models/Post');
+const User = require('../../models/User');
 const Auth = require('../../utils/auth');
 
 module.exports = {
   Query: {
-    posts: async () => {
+    posts: async (parent, { username }) => {
+      const params = username ? { username } : {};
       try {
-        const posts =  await Post.find().sort({ postDate: -1 });
+        const posts =  await Post.find(params).sort({ postDate: -1 });
         return posts;
       } catch(err) {
         throw new Error(err)
       }
     },
-    post: async (_, { postId }) => {
+    post: async (parent, { postId }) => {
       try {
         const post = await Post.findById(postId);
         if(post) {
@@ -28,18 +30,24 @@ module.exports = {
   },
 
   Mutation: {
-    addPost: async (_, { postBody, postAuthor }) => {
+    addPost: async (parent, { postBody, postAuthor }) => {
       
       if(postBody.trim() === '') {
         throw new Error('Post body must not be empty!');
       }
 
       const newPost = await Post.create({
-        postBody: postBody,
-        postAuthor: postAuthor,
+        postBody,
+        postAuthor,
         postDate: new Date().toISOString()
       })
-      await newPost.save();
+
+      await User.findOneAndUpdate(
+        { username: postAuthor },
+        { $addToSet: { posts: newPost._id } }
+      );
+
+
       return newPost;
     },
     removePost: async (_, { postId }, context) => {

@@ -9,9 +9,10 @@ import Auth from '../utils/auth'
 
 function Home() {
   // const { user } = Auth.getProfile().data;
-  const {loading, data}= useQuery(QUERY_POSTS);
+  const { loading, data }= useQuery(QUERY_POSTS);
   const posts = data?.posts || [];
-  
+  const filteredPosts = posts.filter((post) => post !== null)
+  filteredPosts.map((post) => console.log(post))
     return (
       <Grid columns={3}>
         <Grid.Row className="page-title">
@@ -27,8 +28,8 @@ function Home() {
             <h1>Loading posts..</h1>
           ) : (
             <Transition.Group>
-              {posts &&
-                posts.map((post) => (
+              {filteredPosts &&
+                filteredPosts.map((post) => (
                   <Grid.Column style={{ marginBottom: 20 }}>
                     <PostCard post={post} />
                   </Grid.Column>

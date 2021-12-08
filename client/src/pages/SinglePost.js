@@ -73,7 +73,7 @@ function SinglePost() {
     postMarkup = <p>Loading post..</p>;
   } else {
     const {
-      id,
+      _id,
       postBody,
       postDate,
       postAuthor,
@@ -102,7 +102,7 @@ function SinglePost() {
               </Card.Content>
               <hr />
               <Card.Content extra>
-                <LikeButton user={user} post={{ id, likeCount, likes }} />
+                <LikeButton user={user} post={{ _id, likeCount, likes }} />
                 <MyPopup content="Comment on post">
                   <Button
                     as="div"
@@ -118,7 +118,7 @@ function SinglePost() {
                   </Button>
                 </MyPopup>
                 {user && user.username === postAuthor && (
-                  <DeleteButton postId={id} />
+                  <DeleteButton postId={_id} />
                 )}
               </Card.Content>
             </Card>
@@ -151,7 +151,7 @@ function SinglePost() {
               <Card fluid key={comment._id}>
                 <Card.Content>
                   {user && user.username === comment.commentAuthor && (
-                    <DeleteButton postId={id} commentId={comment.id} />
+                    <DeleteButton postId={_id} commentId={comment._id} />
                   )}
                   <Card.Header>{comment.commentAuthor}</Card.Header>
                   <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>

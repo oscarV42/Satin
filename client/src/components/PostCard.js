@@ -12,7 +12,7 @@ function PostCard({
     post: { postBody, postDate, _id, postAuthor, likeCount, commentCount, likes }
   }) {
     const { user } = Auth.getProfile().data;
-  
+    
     return (
       <Card fluid key={_id}>
         <Card.Content>

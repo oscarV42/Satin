@@ -18,10 +18,10 @@ function PostForm() {
 
         cache.writeQuery({
           query: QUERY_POSTS,
-          data: { posts: [addPost, posts] },
+          data: { posts: [addPost, ...posts] },
         });
       } catch (e) {
-        console.error(e);
+        console.error(JSON.stringify(e));
       }
     },
   }
